@@ -1,10 +1,13 @@
-# PyFormance
+# Applipy Metrics
 
-    pip install pyformance
+    pip install applipy_metrics
+
+
+Note: This is a fork of [PyFormance](https://github.com/Lightricks/pyformance)
 
 A Python port of the core portion of a [Java Metrics library by Coda Hale](http://metrics.dropwizard.io/), with inspiration by [YUNOMI - Y U NO MEASURE IT?](https://github.com/richzeng/yunomi)
 
-PyFormance is a toolset for performance measurement and statistics, with a signaling mechanism that allows to issue events in cases of unexpected behavior
+Applipy Metrics is a toolset for performance measurement and statistics, with a signaling mechanism that allows to issue events in cases of unexpected behavior
 
 ## Core Features
 
@@ -26,7 +29,7 @@ A useful combination of the Meter and the Histogram letting you measure the rate
 ### Regex Grouping
 Useful when working with APIs. A RegexRegistry allows to group API calls and measure from a single location instead of having to define different timers in different places.
 
-    >>> from pyformance.registry import RegexRegistry
+    >>> from applipy_metrics.registry import RegexRegistry
     >>> reg = RegexRegistry(pattern='^/api/(?P<model>)/\d+/(?P<verb>)?$')
     >>> def rest_api_request(path):
     ...     with reg.timer(path).time():
@@ -76,11 +79,11 @@ Declare a reporter to push your metrics to the OpenTSDB API
 
 ## Examples
 ### Decorators
-The simplest and easiest way to use the PyFormance library.
+The simplest and easiest way to use the Applipy Metrics library.
 ##### Counter
 You can use the 'count_calls' decorator to count the number of times a function is called.
 
-    >>> from pyformance import counter, count_calls
+    >>> from applipy_metrics import counter, count_calls
     >>> @count_calls
     ... def test():
     ...     pass
@@ -95,7 +98,7 @@ You can use the 'count_calls' decorator to count the number of times a function 
 You can use the 'time_calls' decorator to time the execution of a function and get distributtion data from it.
 
     >>> import time
-    >>> from pyformance import timer, time_calls
+    >>> from applipy_metrics import timer, time_calls
     >>> @time_calls
     ... def test():
     ...     time.sleep(0.1)
@@ -111,16 +114,8 @@ You can also use a timer using the with statement
 ##### Timer
 
     >>> import time
-    >>> from pyformance import timer
+    >>> from applipy_metrics import timer
     >>> with timer("test").time():
     ...    time.sleep(0.1)
     >>> print timer("test").get_mean()
     0.10114598274230957
-    
-
-## Development
-
-The unit tests are run with [Tox](https://tox.readthedocs.org/en/latest/).
-
-    pip install tox
-    tox
