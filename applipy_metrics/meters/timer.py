@@ -1,18 +1,30 @@
 import time
 from .base_metric import BaseMetric
 
-try:
-    from blinker import Namespace
-except ImportError:
-    Namespace = None
 from .histogram import Histogram, DEFAULT_SIZE, DEFAULT_ALPHA
 from .meter import Meter
 
-if Namespace is not None:
-    timer_signals = Namespace()
-    call_too_long = timer_signals.signal("call_too_long")
-else:
-    call_too_long = None
+
+class Chronometer:
+    def __init__(self, clock=time, on_stop=None):
+        super().__init__()
+        self.clock = clock
+        self.start_time = self.clock.time()
+        self.on_stop = on_stop
+
+    def stop(self):
+        elapsed = self.clock.time() - self.start_time
+
+        if self.on_stop:
+            self.on_stop(elapsed)
+
+        return elapsed
+
+    def __enter__(self):
+        self.start_time = self.clock.time()
+
+    def __exit__(self, t, v, tb):
+        self.stop()
 
 
 class Timer(BaseMetric):
@@ -26,7 +38,6 @@ class Timer(BaseMetric):
     def __init__(
         self,
         key,
-        threshold=None,
         size=DEFAULT_SIZE,
         alpha=DEFAULT_ALPHA,
         clock=time,
@@ -45,7 +56,6 @@ class Timer(BaseMetric):
             sample=sample
         )
         self.sink = sink
-        self.threshold = threshold
 
     def get_count(self):
         "get count from internal histogram"
@@ -95,49 +105,22 @@ class Timer(BaseMetric):
         "get 15 rate from internal meter"
         return self.meter.get_fifteen_minute_rate()
 
-    def _update(self, seconds):
+    def update(self, seconds):
         if seconds >= 0:
             self.hist.add(seconds)
             self.meter.mark()
             if self.sink:
                 self.sink.add(seconds)
 
-    def time(self, *args, **kwargs):
+    def time(self):
         """
         Parameters will be sent to signal, if fired.
         Returns a timer context instance which can be used from a with-statement.
         Without with-statement you have to call the stop method on the context
         """
-        return TimerContext(self, self.meter.clock, *args, **kwargs)
+        return Chronometer(self.meter.clock, on_stop=self.update)
 
     def clear(self):
         "clear internal histogram and meter"
         self.hist.clear()
         self.meter.clear()
-
-
-class TimerContext(object):
-    def __init__(self, timer, clock, *args, **kwargs):
-        super(TimerContext, self).__init__()
-        self.clock = clock
-        self.timer = timer
-        self.start_time = self.clock.time()
-        self.kwargs = kwargs
-        self.args = args
-
-    def stop(self):
-        elapsed = self.clock.time() - self.start_time
-        self.timer._update(elapsed)
-        if (
-            self.timer.threshold
-            and self.timer.threshold < elapsed
-            and call_too_long is not None
-        ):
-            call_too_long.send(self.timer, elapsed=elapsed, *self.args, **self.kwargs)
-        return elapsed
-
-    def __enter__(self):
-        pass
-
-    def __exit__(self, t, v, tb):
-        self.stop()

@@ -1,19 +1,14 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function
 import json
 import os
 import socket
 import sys
-from pyformance.registry import set_global_registry, MetricsRegistry
+from ..registry import set_global_registry, MetricsRegistry
 
-if sys.version_info[0] > 2:
-    import urllib.request as urllib
-    import urllib.error as urlerror
-else:
-    import urllib2 as urllib
-    import urllib2 as urlerror
+import urllib.request as urllib
+import urllib.error as urlerror
 
-from pyformance.__version__ import __version__
+from ..__version__ import __version__
 
 from .reporter import Reporter
 
@@ -129,7 +124,7 @@ class NewRelicReporter(Reporter):
             "agent": self.agent_data,
             "components": [
                 {
-                    "guid": "com.github.pyformance",
+                    "guid": "cc.alessio.applipy_metrics",
                     "name": self.name,
                     "duration": self.reporting_interval,
                     "metrics": self.create_metrics(registry),

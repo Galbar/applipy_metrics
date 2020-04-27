@@ -1,6 +1,5 @@
 import time
 from threading import Thread, Event
-import six
 from ..registry import global_registry
 from ..decorators import get_qualname
 
@@ -10,7 +9,7 @@ class Reporter(object):
         # noinspection PyAttributeOutsideInit
         self._loop_thread = Thread(
             target=self._loop,
-            name="pyformance reporter {0}".format(get_qualname(type(self))),
+            name="applipy metrics reporter {0}".format(get_qualname(type(self))),
         )
         self._loop_thread.setDaemon(True)
 
@@ -44,13 +43,11 @@ class Reporter(object):
         while not self._stopped.is_set():
             try:
                 self.report_now(self.registry)
-            except:
+            except Exception:
                 pass
             next_loop_time += self.reporting_interval
             wait = max(0, next_loop_time - time.time())
-            if six.PY2:
-                time.sleep(wait)
-            elif self._stopped.wait(timeout=wait):
+            if self._stopped.wait(timeout=wait):
                 # wait is faster/better in Python 3
                 # See http://stackoverflow.com/questions/29082268/python-time-sleep-vs-event-wait
                 break  # true if timeout

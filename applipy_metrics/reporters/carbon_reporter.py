@@ -4,7 +4,6 @@ import sys
 import struct
 import pickle
 import contextlib
-from six import iteritems
 
 from .reporter import Reporter
 
@@ -54,8 +53,8 @@ class CarbonReporter(Reporter):
                         "%s%s.%s" % (self.prefix, metric_name, metric_key),
                         (timestamp, metric_value),
                     )
-                    for metric_name, metric in iteritems(metrics)
-                    for metric_key, metric_value in iteritems(metric)
+                    for metric_name, metric in metrics.items()
+                    for metric_key, metric_value in metric.items()
                 ],
                 protocol=2,
             )
@@ -63,8 +62,8 @@ class CarbonReporter(Reporter):
             return header + payload
         else:
             metrics_data = []
-            for metric_name, metric in iteritems(metrics):
-                for metric_key, metric_value in iteritems(metric):
+            for metric_name, metric in metrics.items():
+                for metric_key, metric_value in metric.items():
                     metric_line = "%s%s.%s %s %s\n" % (
                         self.prefix,
                         metric_name,

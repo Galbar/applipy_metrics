@@ -3,7 +3,6 @@ import sys
 import socket
 import logging
 import logging.handlers
-from six import iteritems
 import json
 
 from .reporter import Reporter
@@ -23,7 +22,7 @@ class SysLogReporter(Reporter):
         self,
         registry=None,
         reporting_interval=5,
-        tag="pyformance",
+        tag="applipy_metrics",
         clock=None,
         address=DEFAULT_SYSLOG_ADDRESS,
         socktype=DEFAULT_SYSLOG_SOCKTYPE,
@@ -43,7 +42,7 @@ class SysLogReporter(Reporter):
                 formatter = logging.Formatter("{}: %(message)s".format(tag))
                 handler.setFormatter(formatter)
 
-        logger = logging.getLogger("pyformance")
+        logger = logging.getLogger("applipy_metrics")
         logger.setLevel(logging.INFO)
         logger.addHandler(handler)
         self.logger = logger
@@ -58,8 +57,8 @@ class SysLogReporter(Reporter):
 
         metrics_data = {"timestamp": timestamp}
         metrics = registry.dump_metrics()
-        for metric_name, metric in iteritems(metrics):
-            for metric_key, metric_value in iteritems(metric):
+        for metric_name, metric in metrics.items():
+            for metric_key, metric_value in metric.items():
                 metrics_data["{}.{}".format(metric_name, metric_key)] = metric_value
         result = json.dumps(metrics_data, sort_keys=True)
         return result

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from six import iteritems
 import base64
 import logging
 import re
@@ -107,7 +106,7 @@ class InfluxReporter(Reporter):
         return ",".join(
             [
                 "%s=%s" % (k, _format_field_value(v))
-                for (k, v) in iteritems(metric_values) if k != "tags"
+                for (k, v) in metric_values.items() if k != "tags"
             ]
         )
 
@@ -118,7 +117,7 @@ class InfluxReporter(Reporter):
             return "," + ",".join(
                 [
                     "%s=%s" % (k, _format_tag_value(v))
-                    for (k, v) in iteritems(tags)
+                    for (k, v) in tags.items()
                 ]
             )
 
