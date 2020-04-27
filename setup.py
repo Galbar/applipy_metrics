@@ -13,7 +13,7 @@ setup(
     author="Alessio Linares",
     author_email="mail@alessio.cc",
     version=Version.RELEASE,
-    packages=['applipy_metrics'],
+    packages=find_packages(exclude=['doc', 'tests']),
     data_files=[],
     python_requires='>=3.6',
     install_requires=[],
