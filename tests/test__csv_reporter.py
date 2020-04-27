@@ -1,15 +1,10 @@
-import sys
 import os
 import shutil
 import tempfile
 
-if sys.version_info[0] < 3:
-    from StringIO import StringIO
-else:
-    from io import StringIO
-
-from pyformance import MetricsRegistry
-from pyformance.reporters.csv_reporter import CsvReporter
+from io import StringIO
+from applipy_metrics import MetricsRegistry
+from applipy_metrics.reporters.csv_reporter import CsvReporter
 from tests import ManualClock, TimedTestCase
 
 

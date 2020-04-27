@@ -1,8 +1,8 @@
 import os
 import socket
 
-from pyformance.reporters.newrelic_reporter import NewRelicReporter, NewRelicRegistry
-from pyformance.__version__ import __version__
+from applipy_metrics.reporters.newrelic_reporter import NewRelicReporter, NewRelicRegistry
+from applipy_metrics.__version__ import __version__
 from tests import TimedTestCase
 
 
@@ -38,7 +38,7 @@ class TestNewRelicReporter(TimedTestCase):
             self.clock.add(1)
         output = r.collect_metrics(self.registry)
         expected = (
-            '{"agent": {"host": "%s", "pid": %s, "version": "%s"}, "components": [{"duration": 1, "guid": "com.github.pyformance", "metrics": {"Component/t1": {'
+            '{"agent": {"host": "%s", "pid": %s, "version": "%s"}, "components": [{"duration": 1, "guid": "cc.alessio.applipy_metrics", "metrics": {"Component/t1": {'
             '"count": 1, "max": 1, "min": 1, "sum_of_squares": 1, "total": 1}}, "name": "foo"}]}'
             % (socket.gethostname(), os.getpid(), __version__)
         )

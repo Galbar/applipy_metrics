@@ -1,9 +1,9 @@
 import os
 import socket
-import mock
 
-from pyformance.reporters.opentsdb_reporter import OpenTSDBReporter
-from pyformance import MetricsRegistry
+from unittest import mock
+from applipy_metrics.reporters.opentsdb_reporter import OpenTSDBReporter
+from applipy_metrics import MetricsRegistry
 from tests import TimedTestCase
 
 
@@ -68,7 +68,7 @@ class TestOpenTSDBReporter(TimedTestCase):
             c2.dec()
             self.clock.add(1)
         with mock.patch(
-            "pyformance.reporters.opentsdb_reporter.urllib.urlopen"
+            "applipy_metrics.reporters.opentsdb_reporter.urllib.urlopen"
         ) as patch:
             r.report_now()
             patch.assert_called()

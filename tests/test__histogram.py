@@ -1,5 +1,5 @@
 from tests import TimedTestCase
-from pyformance.meters import Histogram
+from applipy_metrics.meters import Histogram
 
 
 class HistogramTestCase(TimedTestCase):

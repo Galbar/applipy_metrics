@@ -281,7 +281,7 @@ class RegexRegistry(MetricsRegistry):
     A single interface used to gather metrics on a service. This class uses a regex to combine
     measures that match a pattern. For example, if you have a REST API, instead of defining
     a timer for each method, you can use a regex to capture all API calls and group them.
-    A pattern like '^/api/(?P<model>)/\d+/(?P<verb>)?$' will group and measure the following:
+    A pattern like '^/api/(?P<model>)/\\d+/(?P<verb>)?$' will group and measure the following:
         /api/users/1 -> users
         /api/users/1/edit -> users/edit
         /api/users/2/edit -> users/edit

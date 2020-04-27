@@ -1,4 +1,4 @@
-from pyformance.meters import Meter
+from applipy_metrics.meters import Meter
 from tests import TimedTestCase
 
 

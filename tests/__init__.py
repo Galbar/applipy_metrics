@@ -1,12 +1,7 @@
-import platform
-
-if platform.python_version() < "2.7":
-    import unittest2 as unittest
-else:
-    import unittest
+import unittest
 
 
-class ManualClock(object):
+class ManualClock:
     def __init__(self):
         super(ManualClock, self).__init__()
         self.now = 0

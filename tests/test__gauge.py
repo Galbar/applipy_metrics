@@ -1,4 +1,4 @@
-from pyformance.meters import CallbackGauge
+from applipy_metrics.meters import CallbackGauge
 from tests import TimedTestCase
 
 

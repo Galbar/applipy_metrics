@@ -1,12 +1,6 @@
-import sys
-
-if sys.version_info[0] < 3:
-    from StringIO import StringIO
-else:
-    from io import StringIO
-
-from pyformance import MetricsRegistry
-from pyformance.reporters.console_reporter import ConsoleReporter
+from io import StringIO
+from applipy_metrics import MetricsRegistry
+from applipy_metrics.reporters.console_reporter import ConsoleReporter
 from tests import TimedTestCase
 
 

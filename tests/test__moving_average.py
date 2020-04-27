@@ -1,4 +1,4 @@
-from pyformance.stats.moving_average import ExpWeightedMovingAvg
+from applipy_metrics.stats.moving_average import ExpWeightedMovingAvg
 from tests import TimedTestCase
 
 
