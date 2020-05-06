@@ -1,6 +1,7 @@
 # Applipy Metrics
 
-    pip install applipy_metrics
+    pip install git+ssh://git@gitlab.com/Galbar2/applipy_metrics.git#egg=applipy_metrics&subdirectory=applipy_metrics
+
 
 
 Note: This is a fork of [PyFormance](https://github.com/Lightricks/pyformance)
