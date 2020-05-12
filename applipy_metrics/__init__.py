@@ -1,15 +1,3 @@
-class Version:
-    MAJOR: str = '0'
-    MINOR: str = '1'
-    PATCH: str = '0'
-
-    VERSION: str = '.'.join((MAJOR, MINOR))
-    RELEASE: str = '.'.join((MAJOR, MINOR, PATCH))
-
-
-__version__ = Version.RELEASE
-
-
 __all__ = [
     'MetricsRegistry',
     'clear',
@@ -30,7 +18,8 @@ __all__ = [
 ]
 
 
-from .registry import (
+from applipy_metrics.version import __version__
+from applipy_metrics.registry import (
     MetricsRegistry,
     clear,
     counter,
@@ -42,7 +31,7 @@ from .registry import (
     set_global_registry,
     timer,
 )
-from .decorators import (
+from applipy_metrics.decorators import (
     count_calls,
     hist_async_calls,
     hist_calls,

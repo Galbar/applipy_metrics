@@ -2,7 +2,7 @@ import os
 import socket
 
 from applipy_metrics.reporters.newrelic_reporter import NewRelicReporter, NewRelicRegistry
-from applipy_metrics.__version__ import __version__
+from applipy_metrics.version import __version__
 from tests import TimedTestCase
 
 

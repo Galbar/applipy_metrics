@@ -8,7 +8,7 @@ from ..registry import set_global_registry, MetricsRegistry
 import urllib.request as urllib
 import urllib.error as urlerror
 
-from ..__version__ import __version__
+from ..version import __version__
 
 from .reporter import Reporter
 
