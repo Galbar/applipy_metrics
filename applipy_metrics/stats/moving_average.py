@@ -61,7 +61,7 @@ class ExpWeightedMovingAvg(object):
     def _alpha(self, interval):
         """
         Calculate the alpha based on the time since the last tick. This is
-        necessary because a single threaded Python program loses precision  
+        necessary because a single threaded Python program loses precision
         under high load, so we can't assume a consistant I{EWMA._interval}.
 
         :type interval: C{float}
