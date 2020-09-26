@@ -1,4 +1,5 @@
 __all__ = [
+    'MetricsModule',
     'MetricsRegistry',
     'clear',
     'count_calls',
@@ -6,19 +7,17 @@ __all__ = [
     'dump_metrics',
     'gauge',
     'global_registry',
-    'hist_async_calls',
-    'hist_calls',
-    'histogram',
-    'meter',
-    'meter_calls',
+    'summarize_async_calls',
+    'summarize_calls',
+    'summary',
     'set_global_registry',
     'time_async_calls',
     'time_calls',
-    'timer',
 ]
 
 
-from applipy_metrics.version import __version__
+from applipy_metrics.version import __version__  # noqa
+from applipy_metrics.module import MetricsModule
 from applipy_metrics.registry import (
     MetricsRegistry,
     clear,
@@ -26,16 +25,13 @@ from applipy_metrics.registry import (
     dump_metrics,
     gauge,
     global_registry,
-    histogram,
-    meter,
+    summary,
     set_global_registry,
-    timer,
 )
 from applipy_metrics.decorators import (
     count_calls,
-    hist_async_calls,
-    hist_calls,
-    meter_calls,
+    summarize_async_calls,
+    summarize_calls,
     time_async_calls,
     time_calls,
 )

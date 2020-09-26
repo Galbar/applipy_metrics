@@ -1,6 +1,14 @@
-from .counter import Counter
-from .meter import Meter
-from .histogram import Histogram
-from .timer import Timer
-from .gauge import Gauge, CallbackGauge, SimpleGauge
+__all__ = [
+    'BaseMetric',
+    'CallbackGauge',
+    'Counter',
+    'Gauge',
+    'SimpleGauge',
+    'Summary',
+]
+
+
 from .base_metric import BaseMetric
+from .counter import Counter
+from .gauge import Gauge, CallbackGauge, SimpleGauge
+from .summary import Summary

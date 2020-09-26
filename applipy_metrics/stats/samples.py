@@ -16,7 +16,7 @@ class ExpDecayingSample(object):
     statistically representative sample, exponentially biased towards newer
     entries.
 
-    @see: <a href="http://www.research.att.com/people/Cormode_Graham/library/publications/CormodeShkapenyukSrivastavaXu09.pdf">
+    @see: http://www.research.att.com/people/Cormode_Graham/library/publications/CormodeShkapenyukSrivastavaXu09.pdf
           Cormode et al. Forward Decay: A Practical Time Decay Model for
           Streaming Systems. ICDE '09: Proceedings of the 2009 IEEE
           International Conference on Data Engineering (2009)</a>
@@ -49,7 +49,7 @@ class ExpDecayingSample(object):
         self.priorities = []
         self.counter = 0
         self.start_time = self.clock.time()
-        self.next_time = self.clock.time() + ExpDecayingSample.RESCALE_THREASHOLD
+        self.next_time = self.start_time + ExpDecayingSample.RESCALE_THREASHOLD
 
     def get_size(self):
         return self.counter if self.counter < self.size else self.size
@@ -88,9 +88,10 @@ class ExpDecayingSample(object):
             self._rescale()
 
     def _rescale(self):
-        self.next_time = self.clock.time() + ExpDecayingSample.RESCALE_THREASHOLD
+        now = self.clock.time()
+        self.next_time = now + ExpDecayingSample.RESCALE_THREASHOLD
         old_start_time = self.start_time
-        self.start_time = self.clock.time()
+        self.start_time = now
         new_values = {}
         new_priorities = []
         for key, val in self.values.items():

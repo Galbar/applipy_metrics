@@ -1,6 +1,7 @@
 import functools
 
 from . import global_registry
+from .stats import Chronometer
 
 
 def get_qualname(obj):
@@ -14,7 +15,7 @@ def count_calls(original_func=None, metric_name=None, registry=None, tags=None):
     :param original_func: the function to be decorated
     :type original_func: C{func}
 
-    :param registry: the registry in which to create the meter
+    :param registry: the registry in which to create the counter
 
     :param tags: tags attached to the timer (e.g. {'region': 'us-west-1'})
     :type tags: C{dict}
@@ -42,51 +43,16 @@ def count_calls(original_func=None, metric_name=None, registry=None, tags=None):
     return _decorate
 
 
-def meter_calls(original_func=None, metric_name=None, registry=None, tags=None):
-    """
-    Decorator to the rate at which a function is called.
-
-    :param original_func: the function to be decorated
-    :type original_func: C{func}
-
-    :param registry: the registry in which to create the meter
-
-    :param tags: tags attached to the timer (e.g. {'region': 'us-west-1'})
-    :type tags: C{dict}
-
-    :return: the decorated function
-    :rtype: C{func}
-    """
-
-    def _decorate(fn):
-        @functools.wraps(fn)
-        def wrapper(*args, **kwargs):
-            function_name = get_qualname(fn)
-            name = metric_name or "%s.meter_calls" % function_name
-
-            _registry = registry or global_registry()
-            _registry.meter(name, tags).mark()
-
-            return fn(*args, **kwargs)
-
-        return wrapper
-
-    if original_func:
-        return _decorate(original_func)
-
-    return _decorate
-
-
-def hist_calls(original_func=None, metric_name=None, registry=None, tags=None):
+def summarize_calls(original_func=None, metric_name=None, registry=None, tags=None):
     """
     Decorator to check the distribution of return values of a function.
 
     :param original_func: the function to be decorated
     :type original_func: C{func}
 
-    :param registry: the registry in which to create the histogram
+    :param registry: the registry in which to create the summary
 
-    :param tags: tags attached to the timer (e.g. {'region': 'us-west-1'})
+    :param tags: tags attached to the summary (e.g. {'region': 'us-west-1'})
     :type tags: C{dict}
 
     :return: the decorated function
@@ -96,13 +62,13 @@ def hist_calls(original_func=None, metric_name=None, registry=None, tags=None):
         @functools.wraps(fn)
         def wrapper(*args, **kwargs):
             function_name = get_qualname(fn)
-            name = metric_name or "%s.hist_calls" % function_name
+            name = metric_name or "%s_result" % function_name
 
             _registry = registry or global_registry()
 
             rtn = fn(*args, **kwargs)
             if type(rtn) in (int, float):
-                _registry.histogram(name, tags).update(rtn)
+                _registry.summary(name, tags).update(rtn)
             return rtn
 
         return wrapper
@@ -113,16 +79,16 @@ def hist_calls(original_func=None, metric_name=None, registry=None, tags=None):
     return _decorate
 
 
-def hist_async_calls(original_func=None, metric_name=None, registry=None, tags=None):
+def summarize_async_calls(original_func=None, metric_name=None, registry=None, tags=None):
     """
     Decorator to check the distribution of return values of a function.
 
     :param original_func: the function to be decorated
     :type original_func: C{func}
 
-    :param registry: the registry in which to create the histogram
+    :param registry: the registry in which to create the summary
 
-    :param tags: tags attached to the timer (e.g. {'region': 'us-west-1'})
+    :param tags: tags attached to the summary (e.g. {'region': 'us-west-1'})
     :type tags: C{dict}
 
     :return: the decorated function
@@ -132,13 +98,13 @@ def hist_async_calls(original_func=None, metric_name=None, registry=None, tags=N
         @functools.wraps(fn)
         async def wrapper(*args, **kwargs):
             function_name = get_qualname(fn)
-            name = metric_name or "%s.hist_async_calls" % function_name
+            name = metric_name or "%s_result" % function_name
 
             _registry = registry or global_registry()
 
             rtn = await fn(*args, **kwargs)
             if type(rtn) in (int, float):
-                _registry.histogram(name, tags).update(rtn)
+                _registry.summary(name, tags).update(rtn)
             return rtn
 
         return wrapper
@@ -156,9 +122,9 @@ def time_calls(original_func=None, metric_name=None, registry=None, tags=None):
     :param original_func: the function to be decorated
     :type original_func: C{func}
 
-    :param registry: the registry in which to create the timer
+    :param registry: the registry in which to create the summary
 
-    :param tags: tags attached to the timer (e.g. {'region': 'us-west-1'})
+    :param tags: tags attached to the summary (e.g. {'region': 'us-west-1'})
     :type tags: C{dict}
 
     :return: the decorated function
@@ -171,9 +137,9 @@ def time_calls(original_func=None, metric_name=None, registry=None, tags=None):
             name = metric_name or "%s.time_calls" % function_name
 
             _registry = registry or global_registry()
-            _timer = _registry.timer(name, tags)
+            _timer = _registry.summary(name, tags)
 
-            with _timer.time():
+            with Chronometer(on_stop=_timer.add):
                 return fn(*args, **kwargs)
 
         return wrapper
@@ -191,9 +157,9 @@ def time_async_calls(original_func=None, metric_name=None, registry=None, tags=N
     :param original_func: the function to be decorated
     :type original_func: C{func}
 
-    :param registry: the registry in which to create the timer
+    :param registry: the registry in which to create the summary
 
-    :param tags: tags attached to the timer (e.g. {'region': 'us-west-1'})
+    :param tags: tags attached to the summary (e.g. {'region': 'us-west-1'})
     :type tags: C{dict}
 
     :return: the decorated function
@@ -208,7 +174,7 @@ def time_async_calls(original_func=None, metric_name=None, registry=None, tags=N
             _registry = registry or global_registry()
             _timer = _registry.timer(name, tags)
 
-            with _timer.time():
+            with Chronometer(on_stop=_timer.add):
                 return await fn(*args, **kwargs)
 
         return wrapper
