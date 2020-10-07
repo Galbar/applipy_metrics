@@ -1,7 +1,6 @@
 import functools
 
-from . import global_registry
-from .stats import Chronometer
+from . import global_registry, Chronometer
 
 
 def get_qualname(obj):

@@ -4,7 +4,9 @@
 
 
 
-Note: This is a fork of [PyFormance](https://github.com/Lightricks/pyformance)
+> Note: This is a hard fork of
+> [Lightricks/PyFormance](https://github.com/Lightricks/pyformance) at commit
+> [`d59501e`](https://github.com/Lightricks/pyformance/commit/d59501ec06299b6af3b758f0ba9ce3f57bf6c73d)
 
 A Python port of the core portion of a [Java Metrics library by Coda Hale](http://metrics.dropwizard.io/), with inspiration by [YUNOMI - Y U NO MEASURE IT?](https://github.com/richzeng/yunomi)
 
@@ -31,50 +33,11 @@ Useful when working with APIs. A RegexRegistry allows to group API calls and mea
     ...         # do stuff
     >>> print reg.dump_metrics()
 
-## Reporters
-### Hosted Graphite Reporter
-A simple call which will periodically push out your metrics to [Hosted Graphite](https://www.hostedgraphite.com/) 
-using the HTTP Interface. 
-
-    registry = MetricsRegistry()	
-    #Push metrics contained in registry to hosted graphite every 10s for the account specified by Key
-	reporter = HostedGraphiteReporter(registry, 10, "XXXXXXXX-XXX-XXXXX-XXXX-XXXXXXXXXX")
-    # Some time later we increment metrics
-    histogram = registry.histogram("test.histogram")
-    histogram.add(0)
-	histogram.add(10)
-	histogram.add(25)
-
-### Carbon Reporter
-A simple call which will periodically push out your metrics to graphite using the Carbon TCP Interface (line protocol).
-
-    registry = MetricsRegistry()	
-    #Push metrics contained in registry to graphite every 10s
-    reporter = CarbonReporter(registry, reporting_interval=10, prefix="my-host", server="graphite-host", port=2003)
-    reporter.start()
-    
-    # Some time later we increment metrics
-    histogram = registry.histogram("test.histogram")
-    histogram.add(0)
-	histogram.add(10)
-	histogram.add(25)
-	
-### OpenTSDB Reporter
-Declare a reporter to push your metrics to the OpenTSDB API
-
-    registry = MetricsRegistry()	
-    reporter = OpenTSDBReporter(registry=registry,
-                                reporting_interval=10,
-                                prefix="my-host",
-                                url="http://opentsdb.com/api/put",
-                                application_name="appname",
-                                write_key="writekey")
-    reporter.start()
-
-
 ## Examples
+
 ### Decorators
 The simplest and easiest way to use the Applipy Metrics library.
+
 ##### Counter
 You can use the 'count_calls' decorator to count the number of times a function is called.
 
@@ -90,10 +53,10 @@ You can use the 'count_calls' decorator to count the number of times a function 
     10
 
 ##### Timer
-You can use the 'time_calls' decorator to time the execution of a function and get distributtion data from it.
+You can use the 'time_calls' decorator to time the execution of a function and get distribution data from it.
 
     >>> import time
-    >>> from applipy_metrics import timer, time_calls
+    >>> from applipy_metrics import summary, time_calls
     >>> @time_calls
     ... def test():
     ...     time.sleep(0.1)
@@ -101,16 +64,16 @@ You can use the 'time_calls' decorator to time the execution of a function and g
     >>> for i in range(10):
     ...     test()
     ... 
-    >>> print timer("test_calls").get_mean()
+    >>> print summary("test_calls").get_snapshot().get_mean()
     0.100820207596
 
 ### With statement
 You can also use a timer using the with statement
-##### Timer
+##### Chronometer
 
     >>> import time
-    >>> from applipy_metrics import timer
-    >>> with timer("test").time():
+    >>> from applipy_metrics import summary, Chronometer
+    >>> with Chronometer(on_stop=lambda x: summary("test").add(x)):
     ...    time.sleep(0.1)
-    >>> print timer("test").get_mean()
+    >>> print summary("test").get_snapshot().get_mean()
     0.10114598274230957

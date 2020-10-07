@@ -1,4 +1,5 @@
 __all__ = [
+    'Chronometer',
     'MetricsModule',
     'MetricsRegistry',
     'clear',
@@ -16,6 +17,7 @@ __all__ = [
 ]
 
 
+from applipy_metrics.chronometer import Chronometer
 from applipy_metrics.version import __version__  # noqa
 from applipy_metrics.module import MetricsModule
 from applipy_metrics.registry import (
