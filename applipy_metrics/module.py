@@ -1,6 +1,9 @@
 from applipy_metrics.registry import MetricsRegistry
 
-from applipy import Module
+try:
+    from applipy import Module
+except ImportError:
+    Module = object
 
 
 class MetricsModule(Module):
