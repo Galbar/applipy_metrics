@@ -43,5 +43,5 @@ publish-gitlab:
   only:
     refs:
       - master
-    # changes:
-    #   - applipy_metrics/version.py
+    changes:
+      - applipy_metrics/version.py
