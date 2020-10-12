@@ -23,7 +23,7 @@ class Summary(BaseMetric):
         super(Summary, self).__init__(key, tags)
         self.lock = Lock()
         self.clock = clock
-        self.sample = sample or SlidingTimeWindowSample()
+        self.sample = sample or SlidingTimeWindowSample(clock=clock)
         self.clear()
 
     def add(self, value):
