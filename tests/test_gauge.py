@@ -1,5 +1,6 @@
 from applipy_metrics.meters import SimpleGauge
 
+
 def test_simple_gauge():
     gauge = SimpleGauge('test', 0)
 
