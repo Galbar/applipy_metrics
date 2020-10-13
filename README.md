@@ -41,6 +41,15 @@ different places.
     ...         # do stuff
     >>> print reg.dump_metrics()
 
+### applipy
+
+This library exposes an applipy module, if applipy is installed.
+
+The module can be imported at `applipy_metrics.MetricsModule`.
+
+It binds a `MetricsRegistry` instance, so that other modules can declare a
+dependency and use it to create metrics.
+
 ## Examples
 
 ### Decorators
