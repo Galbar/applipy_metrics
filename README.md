@@ -1,3 +1,11 @@
+[![pipeline status](https://gitlab.com/applipy/applipy_metrics/badges/master/pipeline.svg)](https://gitlab.com/applipy/applipy_metrics/-/pipelines?scope=branches&ref=master)
+[![coverage report](https://gitlab.com/applipy/applipy_metrics/badges/master/coverage.svg)](https://gitlab.com/applipy/applipy_metrics/-/graphs/master/charts)
+[![PyPI Status](https://img.shields.io/pypi/status/applipy-metrics.svg)](https://pypi.org/project/applipy-metrics/)
+[![PyPI Version](https://img.shields.io/pypi/v/applipy-metrics.svg)](https://pypi.org/project/applipy-metrics/)
+[![PyPI Python](https://img.shields.io/pypi/pyversions/applipy-metrics.svg)](https://pypi.org/project/applipy-metrics/)
+[![PyPI License](https://img.shields.io/pypi/l/applipy-metrics.svg)](https://pypi.org/project/applipy-metrics/)
+[![PyPI Format](https://img.shields.io/pypi/format/applipy-metrics.svg)](https://pypi.org/project/applipy-metrics/)
+
 # Applipy Metrics
 
 > Note: This is a hard fork of
