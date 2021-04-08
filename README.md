@@ -47,7 +47,7 @@ different places.
     >>> def rest_api_request(path):
     ...     with reg.timer(path).time():
     ...         # do stuff
-    >>> print reg.dump_metrics()
+    >>> print(reg.dump_metrics())
 
 ### applipy
 
@@ -57,6 +57,15 @@ The module can be imported at `applipy_metrics.MetricsModule`.
 
 It binds a `MetricsRegistry` instance, so that other modules can declare a
 dependency and use it to create metrics.
+
+#### Configurations available
+
+* `metrics.clock`: fully qualified name of a function that returns timestamps.
+  Will be used as the registry clock, used for summaries.
+* `metrics.summary.sample_provider`: fully qualified name of a function that
+  accepts a _clock_ instance and returns an instance of either
+  `applipy_metrics.stats.samples.ExpDecayingSample` or
+  `applipy_metrics.stats.samples.SlidingTimeWindowSample`.
 
 ## Examples
 
@@ -75,7 +84,7 @@ is called.
     >>> for i in range(10):
     ...     test()
     ... 
-    >>> print counter("test_calls").get_count()
+    >>> print(counter("test_calls").get_count())
     10
 
 ##### Timer
@@ -91,7 +100,7 @@ get distribution data from it.
     >>> for i in range(10):
     ...     test()
     ... 
-    >>> print summary("test_calls").get_snapshot().get_mean()
+    >>> print(summary("test_calls").get_snapshot().get_mean())
     0.100820207596
 
 ### With statement
@@ -103,5 +112,5 @@ You can also use a timer using the with statement
     >>> from applipy_metrics import summary, Chronometer
     >>> with Chronometer(on_stop=lambda x: summary("test").add(x)):
     ...    time.sleep(0.1)
-    >>> print summary("test").get_snapshot().get_mean()
+    >>> print(summary("test").get_snapshot().get_mean())
     0.10114598274230957

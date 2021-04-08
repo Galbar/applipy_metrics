@@ -12,14 +12,15 @@ class MetricsRegistry(object):
     L{MetricsRegistry} to manage all of its metrics tools.
     """
 
-    def __init__(self, clock=time):
+    def __init__(self, clock=None, summary_sample_provider=None):
         """
         Creates a new L{MetricsRegistry} instance.
         """
         self._counters = {}
         self._summaries = {}
         self._gauges = {}
-        self._clock = clock
+        self._clock = clock or time
+        self._summary_sample_provider = summary_sample_provider or (lambda _: None)
 
     def add(self, key, metric, tags=None):
         """
@@ -79,7 +80,10 @@ class MetricsRegistry(object):
         """
         metric_key = BaseMetric(key, tags)
         if metric_key not in self._summaries:
-            self._summaries[metric_key] = Summary(key=key, clock=self._clock, tags=tags)
+            self._summaries[metric_key] = Summary(key=key,
+                                                  clock=self._clock,
+                                                  tags=tags,
+                                                  sample=self._summary_sample_provider(self._clock))
         return self._summaries[metric_key]
 
     def gauge(self, key, gauge=None, default=float("nan"), tags=None):

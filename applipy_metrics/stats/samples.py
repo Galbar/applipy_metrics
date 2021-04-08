@@ -115,7 +115,7 @@ class SlidingTimeWindowSample(object):
     A sample of measurements made in a sliding time window.
     """
 
-    DEFAULT_WINDOW = 300
+    DEFAULT_WINDOW = 60
 
     def __init__(self, window=DEFAULT_WINDOW, clock=time):
         """Creates a SlidingTimeWindowSample.
