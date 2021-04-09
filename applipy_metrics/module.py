@@ -25,7 +25,9 @@ class MetricsReportersAppHandle(AppHandle):
 
     async def on_start(self):
         for reporter in self._reporters:
-            if not reporter.start():
+            if reporter.start():
+                self._logger.info(f'Started reporter {reporter.__module__}.{reporter.__class__.__name__}')
+            else:
                 self._logger.error(f'Failed to start reporter {reporter.__module__}.{reporter.__class__.__name__}')
 
     async def on_shutdown(self):

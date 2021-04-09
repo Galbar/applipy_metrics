@@ -65,10 +65,12 @@ class NewRelicReporter(Reporter):
 
             metric_batch.append(metric)
 
-        response = self._client.send_batch(metric_batch, self._common_tags)
-        try:
-            response.raise_for_status()
-        except Exception:
-            self._logger.exception('Error sending metrics batch')
-        else:
-            self._last_report_ts_ms = timestamp
+        if metric_batch:
+            response = self._client.send_batch(metric_batch, self._common_tags)
+            try:
+                response.raise_for_status()
+            except Exception:
+                self._logger.exception('Error sending metrics batch')
+                return
+
+        self._last_report_ts_ms = timestamp
