@@ -20,7 +20,7 @@ from newrelic_telemetry_sdk import (
 )
 
 
-class NewRelicMetricsReporter(Reporter):
+class NewRelicReporter(Reporter):
 
     _last_report_ts_ms: int
     _client: MetricClient
