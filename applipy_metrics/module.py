@@ -3,7 +3,7 @@ from pydoc import locate
 from typing import List
 
 from applipy_metrics.registry import MetricsRegistry
-from applipy_metrics.reporters.reporter import Reporter
+from applipy_metrics.reporters import Reporter
 
 try:
     from applipy import (
