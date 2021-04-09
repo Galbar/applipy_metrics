@@ -1,15 +1,36 @@
+from logging import Logger
 from pydoc import locate
+from typing import List
 
 from applipy_metrics.registry import MetricsRegistry
+from applipy_metrics.reporters.reporter import Reporter
 
 try:
     from applipy import (
+        AppHandle,
         Config,
         Module,
     )
 except ImportError:
+    AppHandle = object
     Config = object
     Module = object
+
+
+class MetricsReportersAppHandle(AppHandle):
+
+    def __init__(self, reporters: List[Reporter], logger: Logger):
+        self._reporters = reporters
+        self._logger = logger.getChild(f'{self.__module__}.{self.__class__.__name__}')
+
+    async def on_start(self):
+        for reporter in self._reporters:
+            if not reporter.start():
+                self._logger.error(f'Failed to start reporter {reporter.__module__}.{reporter.__class__.__name__}')
+
+    async def on_shutdown(self):
+        for reporter in self._reporters:
+            reporter.stop()
 
 
 class MetricsModule(Module):
@@ -19,6 +40,7 @@ class MetricsModule(Module):
 
     def configure(self, bind, register):
         bind(self._registry_provider)
+        register(MetricsReportersAppHandle)
 
     def _registry_provider(self) -> MetricsRegistry:
         clock = self._config.get('metrics.clock')

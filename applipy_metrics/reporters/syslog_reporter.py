@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-import sys
-import socket
+import json
 import logging
 import logging.handlers
-import json
+import socket
+import sys
+import time
 
 from .reporter import Reporter
 
@@ -23,7 +24,7 @@ class SysLogReporter(Reporter):
         registry=None,
         reporting_interval=5,
         tag="applipy_metrics",
-        clock=None,
+        clock=time,
         address=DEFAULT_SYSLOG_ADDRESS,
         socktype=DEFAULT_SYSLOG_SOCKTYPE,
         facility=DEFAULT_SYSLOG_FACILITY,

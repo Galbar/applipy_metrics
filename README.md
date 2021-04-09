@@ -60,12 +60,20 @@ dependency and use it to create metrics.
 
 #### Configurations available
 
-* `metrics.clock`: fully qualified name of a function that returns timestamps.
-  Will be used as the registry clock, used for summaries.
+* `metrics.clock`: fully qualified name of an object with a member function
+  named `time()` that returns unix timestamps.  Will be used as the registry
+  clock, used for summaries.
 * `metrics.summary.sample_provider`: fully qualified name of a function that
   accepts a _clock_ instance and returns an instance of either
-  `applipy_metrics.stats.samples.ExpDecayingSample` or
-  `applipy_metrics.stats.samples.SlidingTimeWindowSample`.
+  `applipy_metrics.stats.samples.ExpDecayingSample`,
+  `applipy_metrics.stats.samples.SlidingTimeWindowSample` or `None`.
+
+#### Metrics Reporters
+
+If you want to report your metrics using a
+`applipy_metrics.reporters.reporter.Reporter` instance, simply bind your
+reporter provider/instance to the base reporter type. The MetricsModule will
+take care of its lifecycle.
 
 ## Examples
 

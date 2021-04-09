@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-import sys
 import datetime
+import time
+import sys
 from .reporter import Reporter
 
 
@@ -12,7 +13,7 @@ class ConsoleReporter(Reporter):
     """
 
     def __init__(
-        self, registry=None, reporting_interval=30, stream=sys.stderr, clock=None
+        self, registry=None, reporting_interval=30, stream=sys.stderr, clock=time
     ):
         super(ConsoleReporter, self).__init__(registry, reporting_interval)
         self.stream = stream
