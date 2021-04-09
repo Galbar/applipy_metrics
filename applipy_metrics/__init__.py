@@ -2,6 +2,7 @@ __all__ = [
     'Chronometer',
     'MetricsModule',
     'MetricsRegistry',
+    'Reporter',
     'clear',
     'count_calls',
     'counter',
@@ -30,6 +31,7 @@ from applipy_metrics.registry import (
     summary,
     set_global_registry,
 )
+from applipy_metrics.reporters import Reporter
 from applipy_metrics.decorators import (
     count_calls,
     summarize_async_calls,
