@@ -13,10 +13,9 @@ class Reporter(object):
         )
         self._loop_thread.setDaemon(True)
 
-    def __init__(self, registry=None, reporting_interval=30, clock=None):
+    def __init__(self, registry=None, reporting_interval=30):
         self.registry = registry or global_registry()
         self.reporting_interval = reporting_interval
-        self.clock = clock or time
         self._stopped = Event()
         self.create_thread()
 

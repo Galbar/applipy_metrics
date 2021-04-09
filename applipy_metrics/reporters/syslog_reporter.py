@@ -28,7 +28,8 @@ class SysLogReporter(Reporter):
         socktype=DEFAULT_SYSLOG_SOCKTYPE,
         facility=DEFAULT_SYSLOG_FACILITY,
     ):
-        super(SysLogReporter, self).__init__(registry, reporting_interval, clock)
+        super(SysLogReporter, self).__init__(registry, reporting_interval)
+        self.clock = clock
 
         handler = logging.handlers.SysLogHandler(
             address=address, facility=facility, socktype=socktype

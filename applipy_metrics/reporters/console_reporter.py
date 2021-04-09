@@ -14,8 +14,9 @@ class ConsoleReporter(Reporter):
     def __init__(
         self, registry=None, reporting_interval=30, stream=sys.stderr, clock=None
     ):
-        super(ConsoleReporter, self).__init__(registry, reporting_interval, clock)
+        super(ConsoleReporter, self).__init__(registry, reporting_interval)
         self.stream = stream
+        self.clock = clock
 
     def report_now(self, registry=None, timestamp=None):
         metrics = self._collect_metrics(registry or self.registry, timestamp)
