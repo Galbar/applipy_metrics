@@ -10,11 +10,13 @@ try:
         AppHandle,
         Config,
         Module,
+        LoggingModule,
     )
 except ImportError:
     AppHandle = object
     Config = object
     Module = object
+    LoggingModule = None
 
 
 class MetricsReportersAppHandle(AppHandle):
@@ -52,3 +54,9 @@ class MetricsModule(Module):
         if summary_sample_provider:
             summary_sample_provider = locate(summary_sample_provider)
         return MetricsRegistry(clock=clock, summary_sample_provider=summary_sample_provider)
+
+    @classmethod
+    def depends_on(cls):
+        if LoggingModule:
+            return LoggingModule,
+        return ()
