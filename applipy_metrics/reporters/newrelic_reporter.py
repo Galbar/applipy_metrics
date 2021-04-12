@@ -46,7 +46,6 @@ class NewRelicReporter(Reporter):
 
     def report_now(self, registry=None, timestamp=None):
         timestamp = (timestamp or time.time()) * 1000
-        interval_ms = timestamp - self._last_report_ts_ms
 
         snapshot = (registry or self._registry).dump_metrics(True)
         metric_batch = []
@@ -54,19 +53,23 @@ class NewRelicReporter(Reporter):
         for metric, value in snapshot.items():
             if 'avg' in value:
                 metric = SummaryMetric(metric.get_key(), value['count'], value['sum'], value['min'], value['max'],
-                                       interval_ms, tags=metric.get_tags(), end_time_ms=timestamp)
+                                       None, tags=metric.get_tags())
             elif 'value' in value:
-                metric = GaugeMetric(metric.get_key(), value['value'], tags=metric.get_tags(), end_time_ms=timestamp)
+                metric = GaugeMetric(metric.get_key(), value['value'], tags=metric.get_tags())
             elif 'count' in value:
-                metric = CountMetric(metric.get_key(), value['count'], interval_ms, tags=metric.get_tags(),
-                                     end_time_ms=timestamp)
+                metric = CountMetric(metric.get_key(), value['count'], None, tags=metric.get_tags())
             else:
                 continue
 
             metric_batch.append(metric)
 
         if metric_batch:
-            response = self._client.send_batch(metric_batch, self._common_tags)
+            common = {
+                'timestamp': self._last_report_ts_ms,
+                'interval.ms': 0,
+                'attributes': self._common_tags,
+            }
+            response = self._client.send_batch(metric_batch, common)
             try:
                 response.raise_for_status()
             except Exception:
