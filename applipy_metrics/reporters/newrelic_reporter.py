@@ -1,5 +1,6 @@
 import time
 
+from collections.abc import Mapping
 from logging import (
     Logger,
     getLogger,
@@ -20,12 +21,29 @@ from newrelic_telemetry_sdk import (
 )
 
 
+class EmptyDict(Mapping):
+
+    def __getitem__(self, key):
+        raise KeyError(key)
+
+    def __iter__(self):
+        if False:
+            yield None
+
+    def __len__(self):
+        return 0
+
+
+_EMPTY_DICT = EmptyDict()
+
+
 class NewRelicReporter(Reporter):
 
     _last_report_ts_ms: int
     _client: MetricClient
     _registry: MetricsRegistry
     _logger: Logger
+    _last_snapshot: dict
 
     def __init__(
         self,
@@ -43,6 +61,7 @@ class NewRelicReporter(Reporter):
         if not logger:
             logger = getLogger()
         self._logger = logger.getChild(f'{self.__module__}.{self.__class__.__name__}')
+        self._last_snapshot = _EMPTY_DICT
 
     def report_now(self, registry=None, timestamp=None):
         timestamp = (timestamp or time.time()) * 1000
@@ -51,13 +70,24 @@ class NewRelicReporter(Reporter):
         metric_batch = []
 
         for metric, value in snapshot.items():
+            prev = self._last_snapshot.get(metric, _EMPTY_DICT)
             if 'avg' in value:
-                metric = SummaryMetric(metric.get_key(), value['count'], value['sum'], value['min'], value['max'],
-                                       None, tags=metric.get_tags())
+                metric = SummaryMetric(metric.get_key(),
+                                       value['count'] - prev.get('count', 0),
+                                       value['sum'] - prev.get('sum', 0),
+                                       value['min'],
+                                       value['max'],
+                                       None,
+                                       tags=metric.get_tags())
             elif 'value' in value:
-                metric = GaugeMetric(metric.get_key(), value['value'], tags=metric.get_tags())
+                metric = GaugeMetric(metric.get_key(),
+                                     value['value'],
+                                     tags=metric.get_tags())
             elif 'count' in value:
-                metric = CountMetric(metric.get_key(), value['count'], None, tags=metric.get_tags())
+                metric = CountMetric(metric.get_key(),
+                                     value['count'] - prev.get('count', 0),
+                                     None,
+                                     tags=metric.get_tags())
             else:
                 continue
 
@@ -77,3 +107,4 @@ class NewRelicReporter(Reporter):
                 return
 
         self._last_report_ts_ms = timestamp
+        self._last_snapshot = snapshot
